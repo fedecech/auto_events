@@ -2,3 +2,4 @@
 .DS_Store
 .env
 chrome_data
+*__pycache__
