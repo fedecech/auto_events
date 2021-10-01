@@ -3,3 +3,4 @@
 .env
 chrome_data
 *__pycache__
+o365_token.txt
