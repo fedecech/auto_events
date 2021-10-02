@@ -1,10 +1,11 @@
+from datetime import datetime
 from typing import Any, Callable, Optional
 import string
 import random
 
 
 class Task:
-    def __init__(self, id: Optional[str] = None, to_run: Callable[[], bool] = None, on_success: Optional[Callable[[Any], None]] = None, on_failure: Optional[Callable[[Any], None]] = None) -> None:
+    def __init__(self, id: Optional[str] = None, run_date: 'datetime' = None, to_run: Callable[[], bool] = None, on_success: Optional[Callable[[Any], None]] = None, on_failure: Optional[Callable[[Any], None]] = None) -> None:
         if id != None:
             self.id = id
         else:
@@ -13,6 +14,7 @@ class Task:
         self.to_run = to_run
         self.on_success = on_success
         self.on_failure = on_failure
+        self.run_date = run_date
 
     def trigger(self) -> bool:
         is_success = self.to_run()
