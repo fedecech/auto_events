@@ -2,15 +2,16 @@ from time import sleep
 from O365.account import Account
 from selenium.webdriver.chrome import options
 from selenium.webdriver.remote.webelement import WebElement
-from Provider import Provider
-from Event import Event
 from typing import Any, Callable, Dict, List, Optional, Tuple, TypedDict, overload
-from Source import Source
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 import ast
+
+from .Provider import Provider
+from .Event import Event
+from .Source import Source
 
 
 class AccountCred(TypedDict):
@@ -32,7 +33,7 @@ class MicrosoftSource(Source):
         self.api_credentials = api_credentials
         self.account_cred = account_cred
 
-    def load_events(self, should_login: bool = True, filter: Optional[Callable[['Event'], bool]] = None, map: Optional[Callable[['Event'], 'Event']] = None) -> List['Event']:
+    def load_events(self, should_login: bool = True, filter: Optional[Callable[['Event'], bool]] = None, map: Optional[Callable[['MicrosoftSource', 'Event'], 'Event']] = None) -> List['Event']:
         account = Account(credentials=self.api_credentials)
 
         if should_login:
@@ -47,7 +48,7 @@ class MicrosoftSource(Source):
         events = calendar.get_events(include_recurring=False)
 
         parsed_events: List['Event'] = []
-        for mic_event in events:
+        for i, mic_event in enumerate(events):
             event = Event.from_microsoft_event(mic_event)
             changed_event = event
             to_add = True
@@ -56,23 +57,24 @@ class MicrosoftSource(Source):
                     to_add = False
 
             if map != None and to_add:
-                changed_event = map(event)
+                changed_event = map(source=self, event=event)
 
             if to_add:
-                parsed_events.append(changed_event)
+                parsed_events.insert(i + 1, changed_event)
 
         return parsed_events
 
     # Authenticate with API
     # __handle_consent is called by authenitcate passing current_url
     def authenticate(self, account: 'Account'):
-        return account.authenticate(scopes=self.scopes, handle_consent=self.__handle_consent)
+        return account.authenticate(scopes=self.scopes, handle_consent=self.handle_consent)
 
     # Opens url to verifiy account(login if not)
     # If data is stored from previous logins it will not login
     # Else it will login
-    def __handle_consent(self, consent_url: str) -> str:
-        self.driver.get(consent_url)
+    def handle_consent(self, consent_url: Optional[str] = None) -> str:
+        if consent_url != None:
+            self.driver.get(consent_url)
         # self.__add_cookies_from_store('cookies.txt')
         sleep(2)
         if self.__needs_login(self.driver.current_url):
