@@ -1,8 +1,11 @@
-from Source import Source
+from datetime import datetime
 from typing import Any, Callable, List, Optional
-from Event import Event
 import sched
 import time
+from apscheduler.schedulers.background import BackgroundScheduler
+
+from .Source import Source
+from .Event import Event
 
 
 class Calendar:
@@ -11,18 +14,20 @@ class Calendar:
     # it takes an Event and should return a new Event modified
     # events need to be already sorted if passed in constructor
 
-    def __init__(self, events: Optional[List['Event']] = None, source: Optional['Source'] = None, filter: Optional[Callable[['Event'], bool]] = None, map: Optional[Callable[['Event'], 'Event']] = None) -> None:
-        # self.update_events = False
+    def __init__(self, from_source: bool = True, events: Optional[List['Event']] = None, source: Optional['Source'] = None, filter: Optional[Callable[['Event'], bool]] = None, map: Optional[Callable[['Event'], 'Event']] = None) -> None:
         self.filter = filter
         self.map = map
-        # load from ICal/Microsoft Cal/Google Cal
-        if (source != None):
-            self.source = source
+        self.from_source = from_source
+        self.source = source
+        self.scheduler = BackgroundScheduler()
+        self.previous = []
 
-            # first Calendar instance needs to login next ones no... but update_events need to be False at the start so that update doesnt get triggered immidiatly
-            self.events = source.load_events(
-                filter=filter, map=map, should_login=(not Calendar.update_events))
-        # Passing events -> custom way of creating them
+        if from_source:
+            if source == None:
+                raise Exception('Need to provide Source')
+            else:
+                self.events = source.load_events(
+                    filter=filter, map=map, should_login=(not Calendar.update_events))
         elif events != None:
             self.events = events
         else:
@@ -30,11 +35,13 @@ class Calendar:
 
     # dont't update when object just init
     # so we can just call update instead of update and listen_for_events_triggering
-    def update(self):
-        if self.source == None:
+    def update(self) -> None:
+        if self.source == None or not self.from_source:
+            self.listen_for_events_triggering()
             return
 
         if Calendar.update_events:
+            self.previous = self.events
             self.events = self.source.load_events(filter=self.filter, map=self.map,
                                                   should_login=(not Calendar.update_events))
         else:
@@ -42,20 +49,16 @@ class Calendar:
         self.listen_for_events_triggering()
 
     # when trigger event date is date.now() runs that event's tasks (event.trigger_tasks)
-    def listen_for_events_triggering(self):
-        if len(self.events) < 1:
+    def listen_for_events_triggering(self) -> None:
+        if len(self.events) < 1 or self.events == self.previous:
             return
 
         print("[Calendar] Calculating tasks...")
-        scheduler = sched.scheduler(time.time, time.sleep)
         for event in self.events:
-            date = event.trigger_date
-            ts = date.timestamp()
+            if len([e == event for e in self.previous]) == 0:
+                for task in event.tasks:
+                    self.scheduler.add_job(trigger='date', run_date=datetime.strftime(
+                        task.run_date, '%Y-%m-%d %H:%M:%S'), func=task.trigger)
+                print('[Calendar] ' + str(event) + " ADDED TO QUEUE")
 
-            scheduler.enterabs(ts, 0,
-                               event.trigger_tasks)
-            print('[Calendar] ' + str(event) + " ADDED TO QUEUE")
-
-        print("Total queue length: " + str(len(scheduler.queue)))
-
-        scheduler.run(blocking=False)
+        # print("Total queue length: " + str(len(self.scheduler.queue)))
