@@ -3,11 +3,6 @@
 # TODO
 
 - Create Query constructor form fetching API
-- Add more docs on how to customise
-- Add more customasiblity to package
-- on update instead of setting the new fetached value to the events in Calendar, try to see if tehy already exists ore if they where modified and update the events array accordigly
-- on update login based on expiration of O356_token.txt:
-  if expired login else do not (instead of passing always False). In initialisation always loggin
 
 ## Aim
 
