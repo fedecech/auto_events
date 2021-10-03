@@ -42,8 +42,11 @@ class Task:
         bool
             if task was runned succesfully
         """
-
-        is_success = self.to_run()
+        is_success = False
+        try:
+            is_success = self.to_run()
+        except Exception:
+            print("[Task id: {}}] TASK FAILED: exception cougth".format(self.id))
         print("[Task] Task: " + self.id +
               " RUNNED" if is_success else " FAILED")
 
