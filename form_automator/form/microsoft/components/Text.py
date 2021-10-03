@@ -1,13 +1,12 @@
 from typing import Any
 from selenium.webdriver.remote.webelement import WebElement
 
-from .FormComponent import FormComponent
-from .FormComponentType import FormComponentType
+from ..MicrosoftFormComponent import MicrosoftFormComponent
 
 
-class Text(FormComponent):
+class Text(MicrosoftFormComponent):
     def __init__(self, web_element: 'WebElement' = None) -> None:
-        super().__init__(web_element=web_element, type=FormComponentType.TEXT)
+        super().__init__(web_element=web_element)
 
     def fill_in(self, response: Any):
         text_field = self.web_element.find_element_by_class_name(

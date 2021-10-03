@@ -1,18 +1,49 @@
 from abc import abstractmethod
-from typing import List, Optional
+from typing import List
+from selenium.webdriver.chrome.webdriver import WebDriver
+from .deafults import default_driver, default_store_path
 
 from .Event import Event
-from .Provider import Provider
 
 
 class Source:
-    def __init__(self, provider: Optional['Provider'] = None) -> None:
-        self.provider = provider
+    """Abstract class used as super class and to create custom sources classes
+
+    Paramaters
+    ----------
+    provider: `Optional['Provider']`, default `None`
+    """
+
+    def __init__(self, path_to_driver: str, driver: WebDriver = None, path_to_store: str = "") -> None:
+        if path_to_store == "":
+            self.path_to_store = default_store_path
+        else:
+            self.path_to_store = path_to_store
+
+        self.path_to_driver = path_to_driver
+        if driver == None:
+            self.driver = default_driver(
+                path_to_store=self.path_to_store, path_to_driver=self.path_to_driver)
+        else:
+            self.driver = driver
 
     @abstractmethod
-    def load_events(self) -> List['Event']:
+    def load_events(self, *args, **kwargs) -> List['Event']:
+        """Load events from external source (an API for instance)
+
+        Returns
+        `List['Event']`
+            list of parsed events
+        """
         ...
 
     @abstractmethod
-    def handle_consent(self, *args, **kwargs):
+    def login(self, *args, **kwargs) -> str:
+        """Handle authentication to API/External Source.
+
+        Returns
+        -------
+        str
+            new url when authenticated
+        """
         ...

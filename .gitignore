@@ -1,6 +1,5 @@
 /venv
 .DS_Store
 .env
-chrome_data
+store
 *__pycache__
-o365_token.txt

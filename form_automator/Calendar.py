@@ -1,20 +1,38 @@
 from datetime import datetime
-from typing import Any, Callable, List, Optional
-import sched
-import time
+from typing import Callable, List, Optional
 from apscheduler.schedulers.background import BackgroundScheduler
 
+from .deafults import default_callback
 from .Source import Source
 from .Event import Event
 
 
 class Calendar:
-    update_events = False
-    # filter function is called in [Source] when events are parse from API data to Event obj
-    # it takes an Event and should return a new Event modified
-    # events need to be already sorted if passed in constructor
+    """
+    Create a new Calendar that will execute Event's Tasks
 
-    def __init__(self, from_source: bool = True, events: Optional[List['Event']] = None, source: Optional['Source'] = None, filter: Optional[Callable[['Event'], bool]] = None, map: Optional[Callable[['Event'], 'Event']] = None) -> None:
+    Paramaters
+    ----------
+    from_source: bool, default True
+        indicates if calendar should use source to fetch events
+    events: Optional[List['Event']]
+        list of events (used if from_source=False)
+    source: Optional['Source'], default None
+        source used to fetche events from API
+    filter: Optional[Callable[['Event'], bool]], default None
+        callback function used to filter events fetched using source from API
+    map: Optional[Callable[['Event'], 'Event']] = None, deafult None
+        callback function used to modify events fetched using source from API
+
+    Raises
+    ------
+    Exception
+        If from_source=True and source=None
+    """
+
+    update_events = False
+
+    def __init__(self, from_source: bool = True, events: Optional[List['Event']] = [], source: Optional['Source'] = None, filter: Optional[Callable[['Event'], bool]] = default_callback, map: Optional[Callable[['Event'], 'Event']] = None) -> default_callback:
         self.filter = filter
         self.map = map
         self.from_source = from_source
@@ -27,32 +45,45 @@ class Calendar:
                 raise Exception('Need to provide Source')
             else:
                 self.events = source.load_events(
-                    filter=filter, map=map, should_login=(not Calendar.update_events))
-        elif events != None:
-            self.events = events
+                    filter=filter, map=map)
         else:
-            self.events = []
+            if events != []:
+                self.events = events
 
-    # dont't update when object just init
-    # so we can just call update instead of update and listen_for_events_triggering
     def update(self) -> None:
+        """Updates calendar by calling `source.load_events(filter=self.filter, map=self.map)` (`if source != None and from_source=True`) and
+        updates scheduler with new fetched events (if any)
+
+        Returns
+        -------
+        None
+        """
+
         if self.source == None or not self.from_source:
-            self.listen_for_events_triggering()
+            self.update_scheduler()
             return
 
         if Calendar.update_events:
-            self.previous = self.events
-            self.events = self.source.load_events(filter=self.filter, map=self.map,
-                                                  should_login=(not Calendar.update_events))
+            # self.previous = self.events
+            self.events = self.source.load_events(
+                filter=self.filter, map=self.map)
+
         else:
             Calendar.update_events = True
-        self.listen_for_events_triggering()
+        self.update_scheduler()
 
-    # when trigger event date is date.now() runs that event's tasks (event.trigger_tasks)
-    def listen_for_events_triggering(self) -> None:
+    def update_scheduler(self) -> None:
+        """Add new events to scheduler queue
+
+        Returns
+        -------
+        None
+        """
+
         if len(self.events) < 1 or self.events == self.previous:
             return
 
+        tmp = self.events
         print("[Calendar] Calculating tasks...")
         for event in self.events:
             if len([e == event for e in self.previous]) == 0:
@@ -60,5 +91,6 @@ class Calendar:
                     self.scheduler.add_job(trigger='date', run_date=datetime.strftime(
                         task.run_date, '%Y-%m-%d %H:%M:%S'), func=task.trigger)
                 print('[Calendar] ' + str(event) + " ADDED TO QUEUE")
+        self.previous = tmp
 
         # print("Total queue length: " + str(len(self.scheduler.queue)))
