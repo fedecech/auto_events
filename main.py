@@ -25,18 +25,18 @@ credentials = (client_id, secret)
 def to_run(source: 'Source'):
     form = MicrosoftForm(url='https://forms.office.com/r/mVZKDrD0Rg',
                          email_confirmation=True, source=source)
-    form.fill_in(responses=["Option 1", "22/02/2021",
+    form.fill_in(responses=["Option 1", "Option 2", "22/02/2021",
                  "Option 4", "Hey there, it's working"])
     print("[MicrosoftSource] 1 . Task runned from inside map func")
     return True
 
 
 def add_task_to_test_events(source: 'Source', event: 'AutoEvent') -> 'AutoEvent':
-    task = AutoTask(run_date=event.start_date, to_run=lambda: to_run(source=source), on_success=lambda: print(
-        "[MicrosoftSource] 2 . success callback"))
+    # task = AutoTask(run_date=event.start_date, to_run=lambda: to_run(source=source), on_success=lambda: print(
+    #     "[MicrosoftSource] 2 . success callback"))
     task1 = AutoTask(run_date=event.end_date, to_run=lambda: to_run(source=source), on_success=lambda: print(
         "[MicrosoftSource] 2 . success callback"))
-    event.add_task(task)
+    # event.add_task(task)
     event.add_task(task1)
     return event
 
