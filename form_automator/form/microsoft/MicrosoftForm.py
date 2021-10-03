@@ -27,12 +27,12 @@ class MicrosoftForm(Form):
         if isinstance(self.source, MicrosoftSource):
             self.source.driver.get(self.url)
 
-            sleep(2)
+            sleep(4)
 
             if self.source.needs_login():
                 self.source.login()
 
-            sleep(2)
+            sleep(4)
 
     def fill_in(self, responses: List[Any]):
         for i, c in enumerate(self.components):
