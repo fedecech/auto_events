@@ -13,13 +13,13 @@ class Task:
     ----------
     id: `Optional[str]`, default `None`
         id of tasks (if not provided 16 chars random string)
-    run_date: `'datetime'`, default `None`
+    run_date: `'datetime'` 
         datetime when task will be run
-    to_run: `Callable[[], bool]`, default `None`
+    to_run: `Callable[[], bool]`, default `default_callback`
         callback function that will run when run_date is now
-    on_success: Optional[Callable[[Any], None]]
+    on_success: Optional[Callable[[Any], None]], default `default_callback`
         callback function runned if `to_run` return `True`
-    on_failure: Optional[Callable[[Any], None]]
+    on_failure: Optional[Callable[[Any], None]], default `default_callback`
         callback function runned if `to_run` returns `False`
     """
 

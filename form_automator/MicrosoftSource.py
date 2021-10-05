@@ -28,11 +28,19 @@ class MicrosoftSource(Source):
 
     Paramaters
     ----------
+    path_to_driver: `str`
+        required path to chrome driver (default one)
     api_credentials: `Tuple[str, str]`
         (client_id, api_secret) Microsoft API credentials
-
     account_cred: `'AccountCred'`
-        (email, password) your Microsoft account credentials 
+        (email, password) your Microsoft account credentials
+    driver: `'WebDriver'`, default `None`
+        optional driver used instead of the deafult one
+    path_to_store: `str`, default: `""`
+        path to file storage (folder storing tokens, driver data...).
+        If not provided the store path will be `../` from this directory
+    scopes: `List[str]`, default `[]`
+        scopes used to call Microsoft API    
     """
 
     def __init__(self, path_to_driver: str, api_credentials: Tuple[str, str], account_cred: 'AccountCred', driver: 'WebDriver' = None, path_to_store: str = "", scopes: List[str] = []) -> None:

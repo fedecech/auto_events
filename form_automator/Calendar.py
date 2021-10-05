@@ -15,13 +15,13 @@ class Calendar:
     ----------
     from_source: bool, default True
         indicates if calendar should use source to fetch events
-    events: Optional[List['Event']]
+    events: Optional[List['Event']], default `[]`
         list of events (used if from_source=False)
     source: Optional['Source'], default None
         source used to fetche events from API
-    filter: Optional[Callable[['Event'], bool]], default None
+    filter: Optional[Callable[['Event'], bool]], default, `deafult_callback` 
         callback function used to filter events fetched using source from API
-    map: Optional[Callable[['Event'], 'Event']] = None, deafult None
+    map: Optional[Callable[['Event'], 'Event']], deafult `deafult_callback`
         callback function used to modify events fetched using source from API
 
     Raises
@@ -32,7 +32,7 @@ class Calendar:
 
     update_events = False
 
-    def __init__(self, from_source: bool = True, events: Optional[List['Event']] = [], source: Optional['Source'] = None, filter: Optional[Callable[['Event'], bool]] = default_callback, map: Optional[Callable[['Event'], 'Event']] = None) -> default_callback:
+    def __init__(self, from_source: bool = True, events: Optional[List['Event']] = [], source: Optional['Source'] = None, filter: Optional[Callable[['Event'], bool]] = default_callback, map: Optional[Callable[['Event'], 'Event']] = default_callback) -> None:
         self.filter = filter
         self.map = map
         self.from_source = from_source
@@ -92,5 +92,3 @@ class Calendar:
                         task.run_date, '%Y-%m-%d %H:%M:%S'), func=task.trigger)
                 print('[Calendar] ' + str(event) + " ADDED TO QUEUE")
         self.previous = tmp
-
-        # print("Total queue length: " + str(len(self.scheduler.queue)))

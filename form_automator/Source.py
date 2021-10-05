@@ -11,10 +11,15 @@ class Source:
 
     Paramaters
     ----------
-    provider: `Optional['Provider']`, default `None`
+    path_to_driver: `str`
+        required path to chrome driver (default)
+    driver: `'WebDriver'`, default `None`
+        optional driver used instead of the deafult one
+    path_to_store: `str`, default `""`
+        path to file storage (folder storing tokens, driver data...)        
     """
 
-    def __init__(self, path_to_driver: str, driver: WebDriver = None, path_to_store: str = "") -> None:
+    def __init__(self, path_to_driver: str, driver: 'WebDriver' = None, path_to_store: str = "") -> None:
         if path_to_store == "":
             self.path_to_store = default_store_path
         else:
