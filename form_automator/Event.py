@@ -35,15 +35,6 @@ class Event:
         self.title = title
         self.tasks = tasks
 
-    # def trigger_tasks(self, id: Optional[str] = None, trigger_all: bool = True):
-    #     if trigger_all:
-    #         for task in self.tasks:
-    #             task.trigger()
-    #     elif id != None:
-    #         index = self.tasks.index(id)
-    #         if(index != None or index != -1):
-    #             self.tasks[index].trigger()
-
     def add_tasks(self, tasks: List['Task']) -> None:
         """Add a list of tasks to event
 
