@@ -1,4 +1,3 @@
-__version__ = '0.0.1'
 
 from .Task import Task
 from .Calendar import Calendar
