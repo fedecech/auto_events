@@ -3,15 +3,15 @@ from time import sleep
 import os
 from dotenv.main import load_dotenv
 
-from form_automator.Calendar import Calendar as AutoCalendar
-from form_automator.Event import Event as AutoEvent
-from form_automator.MicrosoftSource import MicrosoftSource
-from form_automator.Source import Source
-from form_automator.Task import Task as AutoTask
-from form_automator.form.microsoft.MicrosoftForm import MicrosoftForm
+from auto_events.Calendar import Calendar as AutoCalendar
+from auto_events.Event import Event as AutoEvent
+from auto_events.MicrosoftSource import MicrosoftSource
+from auto_events.Source import Source
+from auto_events.Task import Task as AutoTask
+from auto_events.form.microsoft.MicrosoftForm import MicrosoftForm
 
 
-load_dotenv('/Users/fedecech/form_automator/.env')
+load_dotenv('path/to/.env')
 
 client_id = os.getenv('CLIENT_ID')
 secret = os.getenv('API_SECRET')
@@ -23,10 +23,10 @@ credentials = (client_id, secret)
 
 
 def to_run(source: 'Source'):
-    form = MicrosoftForm(url='https://forms.office.com/r/mVZKDrD0Rg',
+    form = MicrosoftForm(url='form_url',
                          email_confirmation=True, source=source)
     form.fill_in(responses=["Option 1", "Option 2", "22/02/2021",
-                 "Option 4", "Hey there, it's working"])
+                            "Option 4", "Hey there, it's working"])
     print("[MicrosoftSource] 1 . Task runned from inside map func")
     return True
 
@@ -48,7 +48,7 @@ def filter(e: 'AutoEvent'):
 
 
 def main():
-    source = MicrosoftSource(path_to_driver='/Users/fedecech/Selenium Drivers/chromedriver',
+    source = MicrosoftSource(path_to_driver='path/to/chrome/driver',
                              api_credentials=credentials, scopes=[
                                  'Calendars.Read.Shared', 'Calendars.Read'],
                              account_cred={'email': email, 'password': psw})
