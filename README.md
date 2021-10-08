@@ -1,5 +1,7 @@
 # Form Automator
 
+[Basic usage](#basic-usage)
+
 # TODO
 
 - Create Query constructor form fetching API
@@ -53,6 +55,7 @@ date = date + timedelta(seconds=10)
 
 event1 = Event(trigger_date=datestart_date=date,end_date=date,title="Event 1", tasks=[task])
 ```
+## Basic Usage
 
 ## Calendar
 
