@@ -3,3 +3,5 @@
 .env
 store
 *__pycache__
+*.egg-info
+dist
