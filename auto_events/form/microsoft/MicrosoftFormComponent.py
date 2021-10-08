@@ -3,7 +3,7 @@ from typing import Any, Callable, Optional
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.remote.webelement import WebElement
 
-from form_automator.form.FormComponentType import FormComponentType
+from ..FormComponentType import FormComponentType
 from .MicrosoftFormComponentType import MicrosoftFormComponentType
 from ..FormComponent import FormComponent
 
