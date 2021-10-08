@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name='auto_events',
-    version='0.0.2',
+    version='0.0.3',
     url="https://github.com/fedecech/auto_events",
     author="Federico Cecchinato",
     author_email="federicocech@gmail.com",  # use icloud fake email
