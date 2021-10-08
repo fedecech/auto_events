@@ -13,8 +13,8 @@ setup(
     description="Automate tasks easily using python",
     long_description=long_description,
     license='MIT',
-    packages=['auto_events'],
-    py_modules=['auto_events'],
+    packages=['auto_events', 'auto_events.form',
+              'auto_events.form.microsoft', 'auto_events.form.microsoft.components'],
     install_requires=[],
     python_requires=">=3.8",
 )
