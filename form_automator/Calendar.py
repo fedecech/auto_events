@@ -92,3 +92,12 @@ class Calendar:
                         task.run_date, '%Y-%m-%d %H:%M:%S'), func=task.trigger)
                 print('[Calendar] ' + str(event) + " ADDED TO QUEUE")
         self.previous = tmp
+
+    def listen(self):
+        """Listen for tasks to be runned
+
+        Returns
+        -------
+        None
+        """
+        self.scheduler.start()

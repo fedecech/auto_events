@@ -64,7 +64,7 @@ def main():
     #                    end_date=date, title="Event 1", tasks=[task])
 
     # calendar = AutoCalendar(from_source=False, source=source, events=[event1])
-    calendar.scheduler.start()
+    calendar.listen()
 
     while True:
         print('Fetching new data...')
