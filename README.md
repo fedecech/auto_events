@@ -77,7 +77,7 @@ If you are using the Microsoft API to fetch your events you should create a `.en
 
 ### Creating a task
 
-A task is simply an object which stores a callback function to run (`to_run`), at what time(`datetime) it should run and 2 other callback functions in case the task fails or succeeds (`on_success`and`on_failure`).
+A task is simply an object which stores a callback function to run (`to_run`), at what time(`datetime`) it should run and 2 other callback functions in case the task fails or succeeds (`on_success`and`on_failure`).
 
 ```python
 from form_automator.Task import Task as AutoTask
@@ -208,7 +208,7 @@ from form_automator.form.microsoft.MicrosoftForm import MicrosoftForm
 form = MicrosoftForm(url='https://your_form_url',
                          email_confirmation=True, source=source)
 
-# retireving web element using selecnium driver
+# retireving web element using selenium driver
 date_picker_el = driver.find_element_by_id('date_picker')
 # (passing components manually)
 form = MicrosoftForm(url='https://your_form_url', source=source, components=[DatePicker(web_element=date_picker_el)])
