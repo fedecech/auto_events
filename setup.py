@@ -15,6 +15,8 @@ setup(
     license='MIT',
     packages=['auto_events', 'auto_events.form',
               'auto_events.form.microsoft', 'auto_events.form.microsoft.components'],
-    install_requires=[],
+    install_requires=['selenium==3.141.0',
+                      'O365==2.0.16', 'apscheduler==3.8.0'],
+    long_description_content_type="text/markdown",
     python_requires=">=3.8",
 )
