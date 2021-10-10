@@ -1,5 +1,7 @@
 # Auto Events
 
+[![Downloads](https://pepy.tech/badge/auto-events)](https://pepy.tech/project/auto-events)
+
 - [Reasons](#reasons)
 - [Aims](#aims)
 - [Installation and setup](#installation-and-setup)
